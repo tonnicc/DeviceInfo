@@ -3,22 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sending Device Info</title>
+  <title>Dashboard Device Info</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e);
       background-size: 400% 400%;
       animation: gradientBG 15s ease infinite;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       color: white;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      text-align: center;
-      flex-direction: column;
+      margin: 0;
+      padding: 20px;
     }
 
     @keyframes gradientBG {
@@ -27,54 +21,50 @@
       100% {background-position: 0% 50%;}
     }
 
-    .loader {
-      border: 8px solid rgba(255,255,255,0.2);
-      border-left-color: #ffffff;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      animation: spin 1.2s linear infinite;
-      margin-bottom: 20px;
+    h1 {
+      text-align: center;
+      color: #00ffea;
     }
 
-    @keyframes spin {
-      to {transform: rotate(360deg);}
+    #data {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
     }
 
-    .status {
-      font-size: 1.4rem;
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 15px 25px;
+      box-shadow: 0 4px 12px rgba(0, 255, 234, 0.2);
+      width: fit-content;
+      min-width: 300px;
     }
   </style>
 </head>
 <body>
-  <div class="loader"></div>
-  <div class="status" id="status">Mengirim data perangkat...</div>
+  <h1>📡 Dashboard Device Info</h1>
+  <div id="data">
+    <div class="card">📍 Lokasi: <span id="location">Memuat...</span></div>
+    <div class="card">📱 Device: <span id="device">Memuat...</span></div>
+    <div class="card">⏱️ Waktu: <span id="timestamp">Memuat...</span></div>
+  </div>
 
   <script type="module">
-    import { db, ref, set } from './firebase.js';
+    import { db, ref, onValue } from './firebase.js';
 
-    function getLocationAndSend() {
-      if (!navigator.geolocation) {
-        document.getElementById('status').textContent = 'Geolocation tidak didukung.';
-        return;
+    const deviceRef = ref(db, 'device');
+
+    onValue(deviceRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        document.getElementById('location').textContent = data.location;
+        document.getElementById('device').textContent = data.device;
+        document.getElementById('timestamp').textContent = new Date(data.timestamp).toLocaleString();
       }
-
-      navigator.geolocation.getCurrentPosition((position) => {
-        const data = {
-          location: `${position.coords.latitude}, ${position.coords.longitude}`,
-          device: navigator.userAgent,
-          timestamp: new Date().toISOString()
-        };
-
-        set(ref(db, 'device'), data).then(() => {
-          document.getElementById('status').textContent = '✅ Data berhasil dikirim!';
-        }).catch(() => {
-          document.getElementById('status').textContent = '❌ Gagal mengirim data!';
-        });
-      });
-    }
-
-    getLocationAndSend();
+    });
   </script>
 </body>
 </html>
