@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading Device Info</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      flex-direction: column;
+    }
+
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    .loader {
+      border: 8px solid rgba(255,255,255,0.2);
+      border-left-color: #ffffff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1.2s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      to {transform: rotate(360deg);}
+    }
+
+    .status {
+      font-size: 1.4rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="loader"></div>
+  <div class="status" id="status">Mengirim data perangkat...</div>
+
+  <script>
+    // Simulasi ambil data dan kirim ke Firebase (nanti lo ganti sama koneksi asli)
+    setTimeout(() => {
+      document.getElementById('status').textContent = '✅ Data berhasil dikirim!';
+    }, 3000);
+  </script>
+</body>
+</html>
